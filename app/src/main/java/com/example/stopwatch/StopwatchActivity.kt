@@ -11,11 +11,14 @@ class StopwatchActivity : AppCompatActivity() {
 
     private var seconds: Int = 0
     private var running = false
+    private var wasRunning = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
-            seconds = savedInstanceState.getInt("seconds");
-            running = savedInstanceState.getBoolean("running"); }
+            seconds = savedInstanceState.getInt("seconds")
+            running = savedInstanceState.getBoolean("running")
+            wasRunning = savedInstanceState.getBoolean("wasRunning ")
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stopwtch)
         runTimer()
@@ -24,7 +27,7 @@ class StopwatchActivity : AppCompatActivity() {
     private fun runTimer() {
         val handler = Handler()
         handler.post(
-            object: Runnable {
+            object : Runnable {
                 override fun run() {
                     val hours = seconds / 3600
                     val minutes = (seconds % 3600) / 60
@@ -37,7 +40,7 @@ class StopwatchActivity : AppCompatActivity() {
                     if (running) {
                         seconds++
                     }
-                    handler.postDelayed(this,1000)
+                    handler.postDelayed(this, 1000)
                 }
             })
     }
@@ -55,10 +58,24 @@ class StopwatchActivity : AppCompatActivity() {
         seconds = 0
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (wasRunning) {
+            running = true
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        wasRunning = running
+        running = false
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt("seconds",seconds)
+        outState.putInt("seconds", seconds)
         outState.putBoolean("running", running)
+        outState.putBoolean("wasRunning", wasRunning)
     }
 
 }
