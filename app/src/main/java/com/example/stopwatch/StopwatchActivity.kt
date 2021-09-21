@@ -11,14 +11,18 @@ class StopwatchActivity : AppCompatActivity() {
 
     private var seconds: Int = 0
     private var running = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            seconds = savedInstanceState.getInt("seconds");
+            running = savedInstanceState.getBoolean("running"); }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stopwtch)
         runTimer()
     }
 
     private fun runTimer() {
-        val handler: Handler = Handler()
+        val handler = Handler()
         handler.post(
             object: Runnable {
                 override fun run() {
@@ -49,6 +53,12 @@ class StopwatchActivity : AppCompatActivity() {
     fun onClickReset(view: View) {
         running = false
         seconds = 0
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("seconds",seconds)
+        outState.putBoolean("running", running)
     }
 
 }
